@@ -36,7 +36,7 @@ bench.c:     contains the benchmark
 
 ## Output
 -net counters from each run will be placed in net/
--timing info for each run is in timings.out (Output format is {index,Time taken by Job1 without contention, Time  taken by Job2 with contention})
+-timing info for each run is in timings.out (Output format is {index,Time taken by Job1 without contention, Time taken by Job1 with contention})
 -squeue-*.out contains info on what other jobs are running at the time you start the job
 -slurm-*.out has the stdio output
 	
