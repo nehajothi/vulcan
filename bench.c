@@ -49,22 +49,20 @@ double Alltoall(MPI_Comm comm, int num_ranks, int rank, int msg_size, int  num_t
   //declare, initialize message space
   char send[msg_size*num_ranks];
   char recv[msg_size*num_ranks];
-
   if( send == NULL || recv == NULL ){
     printf("Error: cannot allocate buffer for all to all in rank %d\n", rank);
   }
-
+  
+  //populate send buffer
   for(int i = 0; i < msg_size*num_ranks; i++)
     send[i] = rand() % 256;
 
-  //perform All-to-all
+  //perform All-to-all num_time_steps times
   //start timer
   double start = MPI_Wtime();
-
   for(int i = 0; i < num_time_steps; i++){
     MPI_Alltoall(send, msg_size, MPI_CHAR, recv, msg_size, MPI_CHAR, comm);
   }
-
   //end timer
   double end = MPI_Wtime();
   return end - start;
