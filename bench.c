@@ -32,7 +32,7 @@ void parseInput(int argc, char** argv, int* msg_size, int* inner_ranks, int* loo
         sscanf(optarg, "%d", loops);
         break;
       case 'i':
-         sscanf(optarg, "%d", run_index);
+        sscanf(optarg, "%d", run_index);
         break;
       default:
         break;
@@ -49,17 +49,22 @@ double Alltoall(MPI_Comm comm, int num_ranks, int rank, int msg_size, int  num_t
   //declare, initialize message space
   char send[msg_size*num_ranks];
   char recv[msg_size*num_ranks];
+
   if( send == NULL || recv == NULL ){
     printf("Error: cannot allocate buffer for all to all in rank %d\n", rank);
   }
+
   for(int i = 0; i < msg_size*num_ranks; i++)
     send[i] = rand() % 256;
+
   //perform All-to-all
   //start timer
   double start = MPI_Wtime();
+
   for(int i = 0; i < num_time_steps; i++){
     MPI_Alltoall(send, msg_size, MPI_CHAR, recv, msg_size, MPI_CHAR, comm);
   }
+
   //end timer
   double end = MPI_Wtime();
   return end - start;
@@ -106,7 +111,6 @@ int main(int argc, char** argv){
     printf("\tmsg_size: %d, inner_ranks: %d, loops: %d, run_index: %d\n", msg_size, inner_ranks, loops, run_index);
     
   //Assigning ranks to JOB1 and JOB2 (Rank 0-255 -> JOB1, Rank 56-511 -> JOB2)
-  //int * splitter = (int*)malloc(sizeof(int)*num_ranks);
   int splitter[num_ranks];
   for(int i = inner_ranks; i < num_ranks; i++)
     splitter[i] = JOB2;
@@ -141,12 +145,15 @@ int main(int argc, char** argv){
   else{
     Alltoall(split_comm, split_num_ranks, split_rank, msg_size, loops);
   }
+  MPI_Barrier(MPI_COMM_WORLD);
   //end of benchmark
+
   //stop network counters
   MPI_Pcontrol(0);
    
   //print timings to output file
-  if(splitter[rank] == JOB1 && split_rank==0) fprintf(timings, "%d,%f,%f\n", run_index, run1, run2);
+  if(splitter[rank] == JOB1 && split_rank==0) 
+    fprintf(timings, "%d,%f,%f\n", run_index, run1, run2);
 
   MPI_Finalize();
   exit(0);
