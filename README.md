@@ -33,6 +33,11 @@ msub moab-vulcan.sh
 
 ## Files:
 bench.c:     contains the benchmark
+bench_local.c:  implements local A2A implementation
+    Algorithm - For long messages and power-of-two number of processes
+    If rank is Even, then start sending to rank+1, rank+2 ,.., and wrap around till rank-1 (To The Right)
+    Else if rank is Odd, then send to rank-1,rank-2,...,and wrap around till rank+1 (To The Left)
+
 
 ## Output
 -net counters from each run will be placed in net/
